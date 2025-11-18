@@ -19,3 +19,8 @@ def add_product_store(db: Session, product_id: int, store_id: int) -> ProductSto
 
 def delete_product_store(db: Session, link: ProductStore):
     db.delete(link)
+
+def delete_product_store_by_ids(db: Session, product_id: int, store_id: int):
+    link = get_product_store(db, product_id, store_id)
+    if link:
+        delete_product_store(db, link)

@@ -5,7 +5,7 @@ class ProductInput(BaseModel):
     product_id: int = Field(..., description="Identificador del producto", ge=0)
     # REGEX: Detecta una cadena de dígitos separados por '|', por ejemplo: "1|2|3"
     # o simplemente un dígito "1"
-    store_id: list[int] = Field(..., description="Identificador de la tienda")
+    store_id: set[int] = Field(..., description="Identificador de la tienda")
     title: str = Field(..., description="Título del producto", min_length=1)
     price: PositiveFloat = Field(..., description="Precio del producto")
 
@@ -20,13 +20,13 @@ class ProductInput(BaseModel):
         return value
     
     @field_validator("store_id", mode="before")
-    def parse_store_id(cls, value: str) -> list[int]:
+    def parse_store_id(cls, value: str) -> set[int]:
         """
-        Parsea la cadena de store_id en una lista de enteros positivos
+        Parsea la cadena de store_id en un set de enteros positivos
         """
         pattern=r"^\d+(?:\|\d+)*$"
         if re.match(pattern, value):
-            return [int(id) for id in value.split("|")]
+            return {int(x) for x in value.split("|")}
         else:
             raise ValueError(f"store_id debe ser una cadena de dígitos separados por '|', valor recibido: {value}")
         
