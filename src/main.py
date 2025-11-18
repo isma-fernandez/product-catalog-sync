@@ -30,7 +30,6 @@ def temp_test_db_operations():
 def temp_test_csv_reading():
     file_path: Path = Path(settings.catalog_data_path)
     products = csv_reader.read_products_from_csv(file_path)
-    logger.info(f"Productos leídos desde CSV: {products}")
 
 
 def main():
