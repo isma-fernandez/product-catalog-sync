@@ -5,7 +5,7 @@ from src.utils.logging import setup_logging, get_logger
 # DB Tests
 from src.repositories import db_repository
 from src.db import database
-from src.db.product import Product
+from src.db.models.product import Product
 from src.services import csv_reader
 from pathlib import Path
 from src.config.app_config import settings

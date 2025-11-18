@@ -6,7 +6,6 @@ from typing import Generator
 from sqlalchemy.exc import SQLAlchemyError
 from src.utils.logging import get_logger
 from src.db.base import Base
-from src.db.product import Product
 
 logger = get_logger("app.db")
 
