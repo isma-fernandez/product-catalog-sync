@@ -46,12 +46,11 @@ def _process_one_product(product: ProductInput):
     # 1. Si es nuevo, se inserta en la base de datos.
     product_db: Product = product_repository.get_product(db, product.product_id)
     if not product_db:
-        product_db = product_repository.create_product(db, Product(
-            product_id=product.product_id,
-            title=product.title,
-            price=product.price
-        ))
-        _assign_stores_to_product(product_db, product.store_ids)
+        product_db = product_repository.create_product(
+            db, product_id=product.product_id,
+            title=product.title, price=product.price
+            )
+        _assign_stores_to_product(product_db, product.store_id)
         logger.info(f"Producto creado: {product_db}")
     else:
         ...
