@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class AppConfig(BaseSettings):
     db_host: str
@@ -11,4 +11,4 @@ class AppConfig(BaseSettings):
     class Config:
         env_file = ".env"
 
-settings = AppConfig()   
+settings = AppConfig()
