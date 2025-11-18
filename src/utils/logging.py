@@ -1,7 +1,9 @@
-import logging, logging.config
-import os
+import logging
+import logging.config
 from pathlib import Path
 from src.config.app_config import settings
+
+logger = logging.getLogger("app.utils.logging")
 
 def setup_logging() -> None:
     """
@@ -12,13 +14,13 @@ def setup_logging() -> None:
 
     if log_config_path.exists():
         logging.config.fileConfig(log_config_path, disable_existing_loggers=False)
+        logger.info(f"Logging configurado usando: {log_config_path}")
     else:
         logging.basicConfig(level=logging.INFO)
-        logging.getLogger().warning(f"Archivo de configuración de logging no encontrado: {log_config_path}. Usando configuración básica.")
+        logger.warning(f"Archivo de configuración de logging no encontrado: {log_config_path}. Usando configuración básica.")
 
 def get_logger(name: str) -> logging.Logger:
     """
     Devuelve un logger con el nombre especificado.
     """
     return logging.getLogger(name)
-
