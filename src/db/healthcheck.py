@@ -1,8 +1,9 @@
+import sys
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from src.db.database import engine
 from src.utils.logging import get_logger
-import sys
+
 
 logger = get_logger("app.db")
 

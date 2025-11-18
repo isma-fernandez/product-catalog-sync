@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, PositiveInt, PositiveFloat, field_validator, conint
+from pydantic import BaseModel, Field, PositiveFloat, field_validator
 import re
 
 class ProductInput(BaseModel):

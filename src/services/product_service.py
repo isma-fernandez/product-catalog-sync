@@ -1,8 +1,9 @@
+from sqlalchemy.orm import Session
 from src.utils.logging import get_logger
 from src.db.models.product import Product
 from src.schemas.product_input import ProductInput
 from src.repositories import product_repository, store_repository, product_store_repository
-from sqlalchemy.orm import Session
+
 
 logger = get_logger("app.services.product")
 db_logger = get_logger("app.db.services.product")

@@ -1,9 +1,11 @@
 import csv
 from pathlib import Path
-from src.schemas.product_input import ProductInput
-from src.utils.logging import get_logger
 from typing import List
 from pydantic import ValidationError
+from src.schemas.product_input import ProductInput
+from src.utils.logging import get_logger
+
+
 
 logger = get_logger(f"app.{__name__}")
 

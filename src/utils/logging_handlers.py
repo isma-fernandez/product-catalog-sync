@@ -1,5 +1,4 @@
 import logging
-import sys
 
 class ConsoleHandlerNoTraceback(logging.StreamHandler):
     """Handler que solo muestra el mensaje sin traceback en consola"""

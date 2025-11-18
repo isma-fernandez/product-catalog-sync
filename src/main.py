@@ -1,14 +1,10 @@
+import logging
+from pathlib import Path
 from src.db.database import init_db
 from src.db.healthcheck import verify_db_connection
-import logging
 from src.utils.logging import setup_logging, get_logger
-# DB Tests
-from src.db import database
-from src.db.models.product import Product
 from src.services import csv_reader
-from pathlib import Path
 from src.config.app_config import settings
-from src.services.update_catalog import update_catalog
 from src.services.update_portal import update_portal
 
 logger = get_logger("app.main")

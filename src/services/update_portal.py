@@ -1,13 +1,11 @@
-import logging
-from pathlib import Path
+import sys
+from typing import List
+from sqlalchemy.orm import Session
 from src.utils.logging import get_logger
 from src.services.csv_reader import read_products_from_csv
 from src.config.app_config import settings
 from src.schemas.product_input import ProductInput
-from typing import List
 from src.db import database
-from sqlalchemy.orm import Session
-import sys
 from src.services.product_service import process_one_product
 from src.repositories import product_repository
 
