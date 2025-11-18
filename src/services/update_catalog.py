@@ -42,7 +42,6 @@ def _process_one_product(product: ProductInput):
     """
     logger.debug(f"Procesando producto: {product}")
 
-    # CASOS:
     # 1. Si es nuevo, se inserta en la base de datos.
     product_db: Product = product_repository.get_product(db, product.product_id)
     if not product_db:
@@ -53,9 +52,17 @@ def _process_one_product(product: ProductInput):
         _assign_stores_to_product(product_db, product.store_id)
         logger.info(f"Producto creado: {product_db}")
     else:
-        ...
-        # TODO: Actualizar el producto si hay cambios en title o price
     # 2. Si un producto ya existe, se debe actualizar la información.
+        if _is_product_changed(product_db, product):
+            product_repository.update_product(
+                product_db, title=product.title,
+                price=product.price
+            )
+            logger.info(f"Producto actualizado: {product_db}")
+        else:
+            logger.debug(f"No hay cambios para el producto {product.product_id}")
+        # TODO: Actualizar el producto si hay cambios en title o price
+    
     
     # 3. Si el producto cambia de store/cuenta, realizar la reasignación.
     # NOTAS: Si la tienda no existe, se debe crear.
@@ -65,11 +72,16 @@ def _assign_stores_to_product(product: Product, store_ids: List[int]):
     Asigna las tiendas a un producto, creando las relaciones necesarias.
     """
     for store_id in store_ids:
-        store: Store = store_repository.get_store(db, store_id)
-        if not store:
-            store = store_repository.create_store(db, store_id)
+        store: Store = store_repository.get_or_create_store(db, store_id)
         product_store_repository.add_product_store(db, product.product_id, store.store_id)
         logger.info(f"Tienda creada: {store}")
         logger.info(f"Asignada tienda {store.store_id} al producto {product.product_id}")
+
+def _is_product_changed(product_db: Product, product_input: ProductInput) -> bool:
+    """
+    Compara los datos del producto en la base de datos con los datos del input.
+    Retorna True si hay diferencias, False si son iguales.
+    """
+    return (product_db.title != product_input.title) or (product_db.price != product_input.price)
             
             
