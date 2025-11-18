@@ -1,32 +1,30 @@
-import logging
-from pathlib import Path
+import argparse
 from src.db.database import init_db
 from src.db.healthcheck import verify_db_connection
 from src.utils.logging import setup_logging, get_logger
-from src.services import csv_reader
-from src.config.app_config import settings
 from src.services.update_portal import update_portal
+from src.services.update_catalog import update_catalog
 
 logger = get_logger("app.main")
 
-def temp_test_csv_reading():
-    file_path: Path = Path(settings.catalog_data_path)
-    products = csv_reader.read_products_from_csv(file_path)
-
-
 def main():
-    # Configurar logging
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--catalog", action="store_true")
+    parser.add_argument("--portal", action="store_true")
+    args = parser.parse_args()
+
     setup_logging()
-    logger: logging.Logger = get_logger(f"app.{__name__}")
     logger.info("Iniciando la aplicación...")
+
     verify_db_connection()
     init_db()
-    update_portal()
-    #temp_test_db_operations()
-    #temp_test_csv_reading()
     
-
-
+    if args.catalog:
+        update_catalog()
+    elif args.portal:
+        update_portal()
+    else:
+        logger.error("No se especificó ninguna acción. Usa --catalog o --portal.")
 
 if __name__ == "__main__":
     main()
