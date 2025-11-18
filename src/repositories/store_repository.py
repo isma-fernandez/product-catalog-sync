@@ -1,0 +1,10 @@
+from sqlalchemy.orm import Session
+from src.db.models.store import Store
+
+def get_store(db: Session, store_id: int) -> Store | None:
+    return db.query(Store).filter(Store.store_id == store_id).first()
+
+def create_store(db: Session, store_id: int) -> Store:
+    store = Store(store_id=store_id)
+    db.add(store)
+    return store
