@@ -9,6 +9,7 @@ from src.services import csv_reader
 from pathlib import Path
 from src.config.app_config import settings
 from src.services.update_catalog import update_catalog
+from src.services.update_portal import update_portal
 
 logger = get_logger("app.main")
 
@@ -24,7 +25,7 @@ def main():
     logger.info("Iniciando la aplicación...")
     verify_db_connection()
     init_db()
-    update_catalog()
+    update_portal()
     #temp_test_db_operations()
     #temp_test_csv_reading()
     
