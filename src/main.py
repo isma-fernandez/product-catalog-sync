@@ -1,16 +1,19 @@
 import argparse
+from pathlib import Path
 from src.db.database import init_db
 from src.db.healthcheck import verify_db_connection
 from src.utils.logging import setup_logging, get_logger
 from src.services.update_portal import update_portal
 from src.services.update_catalog import update_catalog
+from src.config.app_config import settings
 
 logger = get_logger("app.main")
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--catalog", action="store_true")
-    parser.add_argument("--portal", action="store_true")
+    parser.add_argument("--catalog", action="store_true", help="Actualiza el catálogo desde un archivo")
+    parser.add_argument("--portal", action="store_true", help="Actualiza el portal desde un archivo")
+    parser.add_argument("--file", type=str, help="Ruta del archivo a procesar (opcional)")
     args = parser.parse_args()
 
     setup_logging()
@@ -19,6 +22,10 @@ def main():
     verify_db_connection()
     init_db()
     
+    if args.file:
+        settings.catalog_data_path = Path(args.file)
+        settings.portal_data_path = Path(args.file)
+
     if args.catalog:
         update_catalog()
     elif args.portal:

@@ -109,3 +109,101 @@ Donde:
 
 ## Ejecución
 
+### Inicializar la base de datos
+El programa crea y inicializa las tablas automáticamente.
+
+### Modo catálogo
+
+Actualiza el catálogo de productos desde `data/feed_items.csv` o una ruta específicada.
+
+Ruta por defecto (`data/feed_items.csv`)
+```bash
+python -m src.main --catalog
+```
+
+Ruta personalizada:
+```bash
+python -m src.main --catalog --file data/custom_file.csv
+```
+
+Este modo:
+- Lee productos del archivo CSV
+- Crea o actualiza productos existentes
+- **Mantiene** productos no presentes en el CSV
+- Gestiona las relaciones producto-tienda
+
+### Modo portal
+
+Sincroniza productos desde `data/portal_items.csv`:
+
+Ruta por defecto (`data/feed_items.csv`)
+```bash
+python -m src.main --portal
+```
+
+Ruta personalizada:
+```bash
+python -m src.main --portal --file data/custom_file.csv
+```
+
+Este modo:
+- Lee productos del archivo CSV
+- Crea o actualiza productos existentes
+- **Elimina** productos que no están en el CSV
+- Sincroniza completamente el portal con el archivo
+
+
+### Verificación de logs
+Los logs se almacenan en el directorio `/logs`. Están divididos en dos archivos:
+- **app.log**: registra todo lo que ocurre relacionado directamente con la aplicación
+- **db.log**: registra todas las operaciones realizadas sobre la base de datos incluido COMMITS y ROLLBACKS
+
+## Estructura del código
+```
+product-catalog-sync/
+│
+├── src/
+│   ├── api/                    # API (TODO)
+│   ├── config/                
+│   │   ├── app_config.py      # Configuración principal
+│   │   └── logging.conf       # Configuración de logging
+│   │
+│   ├── db/                     # Capa de base de datos
+│   │   ├── models/            
+│   │   │   ├── product.py        # Modelo Product
+│   │   │   ├── store.py          # Modelo Store
+│   │   │   └── product_store.py  # Tabla de relación many-to-many
+│   │   ├── base.py           
+│   │   ├── database.py       # Configuración y gestión de sesiones
+│   │   └── healthcheck.py    # Verificación de conexión a DB
+│   │
+│   ├── repositories/          # Capa de acceso a datos
+│   │   ├── product_repository.py       # CRUD de productos
+│   │   ├── store_repository.py         # CRUD de tiendas
+│   │   └── product_store_repository.py # CRUD de relaciones
+│   │
+│   ├── schemas/               # Esquemas de validación
+│   │   └── product_input.py   # Schema para datos de entrada
+│   │
+│   ├── services/              # Lógica principal
+│   │   ├── csv_reader.py      # Lectura y validación de CSV
+│   │   ├── product_service.py # Procesamiento de productos
+│   │   ├── update_catalog.py  # Servicio de actualización de catálogo
+│   │   └── update_portal.py   # Servicio de actualización de portal
+│   │
+│   ├── utils/                 # Utilidades
+│   │   ├── logging.py          # Configuración de logging
+│   │   └── logging_handlers.py # Handlers personalizados
+│   │
+│   └── main.py               # Punto de entrada de la aplicación
+│
+├── data/                      # Archivos CSV de entrada
+│   ├── feed_items.csv        # Datos del catálogo
+│   └── portal_items.csv      # Datos del portal
+│
+├── docker-compose.yaml       # Configuración de Docker para PostgreSQL
+├── requirements.txt          # Dependencias de Python
+├── .env.example             # Ejemplo de variables de entorno
+└── README.md                # Esta documentación
+```
+
