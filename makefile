@@ -40,3 +40,6 @@ install:
 	@echo "  python -m src.main --portal"
 	@echo "  python -m src.main --catalog"
 	@echo "  opcional: --file <ruta_del_archivo>"
+	@echo ""
+	@echo "O accediendo al endpoint a través de:"
+	@echo "  localhost:8000/api/products"
