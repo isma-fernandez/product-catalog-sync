@@ -18,6 +18,13 @@ La aplicación sigue una arquitectura basada en capas:
 - **Capa de esquemas**: Validación de datos usando Pydantic
 - **Configuración**: Centralización de la configuración
 
+## Dependencias principales
+- **SQLAlchemy 2.0.44**: ORM para gestión de base de datos
+- **Pydantic 2.12.4**: Validación de datos
+- **psycopg2 2.9.11**: Adaptador de PostgreSQL
+- **python-dotenv 1.2.1**: Gestión de variables de entorno
+- **pydantic-settings 2.12.0**: Configuración basada en Pydantic
+
 ## Instalación y configuración
 
 ### Requisitos previos
@@ -207,3 +214,51 @@ product-catalog-sync/
 └── README.md                # Esta documentación
 ```
 
+## Modelo de datos
+El sistema utiliza tres tablas principales
+
+### 1. Products
+- `product_id` (PK): Identificador único del producto
+- `title`: Título del producto
+- `price`: Precio del producto
+
+### 2. Stores
+- `store_id` (PK): Identificador único de la tienda
+
+### 3. Product_Store (N:N)
+- `product_id` (FK, PK): Referencia a Products
+- `store_id` (FK, PK): Referencia a Stores
+
+## Ejemplos de uso
+
+### Ejemplo 1: Actualización del catálogo
+```bash
+# 1. Asegúrate que la base de datos está funcionando
+docker-compose up -d
+
+# 2. Verifica tu archivo CSV
+cat data/feed_items.csv
+# o
+cat data/custom_file.csv
+
+# 3. Ejecuta la actualización del catálogo
+python -m src.main --catalog    # ruta por defecto
+# o
+python -m src.main --catalog --file data/custom_file.csv
+```
+
+### Ejemplo 2: Sincronización del portal
+```bash
+#1. Verifica tu archivo CSV
+cat data/portal_items.csv
+# o
+cat data/custom_file.csv
+
+# 2. Ejecuta la actualización del catálogo
+python -m src.main --portal    # ruta por defecto
+# o
+python -m src.main --portal --file data/custom_file.csv
+```
+
+
+```
