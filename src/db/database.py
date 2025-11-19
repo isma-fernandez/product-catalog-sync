@@ -16,11 +16,10 @@ engine: Engine = create_engine(
 )
 SessionLocal: Session = sessionmaker(autocommit=False, bind=engine)
 
-""" TODO: Función que se utilizará si se desarrolla FastAPI"""
-@contextmanager
+
 def get_db() -> Generator:
     """
-    Proporciona una sesión de base de datos
+    Proporciona una sesión de base de datos a FastAPI
     """
     db = SessionLocal()
     try:

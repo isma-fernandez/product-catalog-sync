@@ -8,4 +8,5 @@ class ProductResponse(BaseModel):
     stores: List[int]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+

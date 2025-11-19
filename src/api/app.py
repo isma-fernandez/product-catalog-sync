@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from src.db.database import verify_db_connection
+from src.db.healthcheck import verify_db_connection
 from src.api.routers import router 
 from src.utils.logging import setup_logging, get_logger
 
@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     verify_db_connection()
 
     yield 
-    
+
     logger.info("Cerrando aplicación FastAPI...")
 
 app = FastAPI(title="Product Catalog Sync API", version="1.0.0", lifespan=lifespan)
