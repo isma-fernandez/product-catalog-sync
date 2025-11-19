@@ -5,14 +5,32 @@ services:
     image: postgres:17
     container_name: catalog_db
     restart: always
+    env_file: .env 
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - logs_data:/var/lib/postgresql/data
+    networks:
+      - catalog_network
+  app:
+    build: .
+    container_name: product_catalog_app
+    restart: always
+    env_file: .env 
+    ports:
+      - "${API_PORT}:8000"
+    depends_on:
+      - db
+    networks:
+      - catalog_network
+    # se podria añadir un volumen para los logs si es necesario
+    command: uvicorn src.api.app:app --host 0.0.0.0 --port 8000
 
 volumes:
   db_data:
+networks:
+  catalog_network:

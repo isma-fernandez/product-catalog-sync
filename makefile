@@ -23,7 +23,7 @@ install:
 		echo "Archivo .env ya existe"; \
 	fi
 
-	@echo "Iniciando PostgreSQL con Docker..."
+	@echo "Iniciando PostgreSQL y FastAPI con Docker..."
 	docker-compose up -d
 
 	@echo "Creando tablas en la base de datos..."
@@ -33,7 +33,7 @@ install:
 	mkdir -p data
 	@echo "Creando directorio de logs si no existe..."
 	mkdir -p logs
-	
+
 	@echo "Instalación completa."
 	@echo ""
 	@echo "Puedes empezar ejecutando:"
