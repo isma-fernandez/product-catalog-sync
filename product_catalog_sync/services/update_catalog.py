@@ -8,8 +8,8 @@ from product_catalog_sync.schemas.product_input import ProductInput
 from product_catalog_sync.db import database
 from product_catalog_sync.services.product_service import process_one_product
 
-logger = get_logger(f"app.{__name__}")
-db_logger = get_logger(f"app.db.{__name__}")
+logger = get_logger(__name__)
+db_logger = get_logger(f"{__name__}.db")
 
 def update_catalog() -> None:
     logger.info("Actualizando el catálogo de productos...")

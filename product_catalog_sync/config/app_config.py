@@ -8,9 +8,10 @@ class AppConfig(BaseSettings):
     db_user: str
     db_password: str
     db_name: str
+    api_port: int = 8000
 
     # Ruta configuración del logging
-    logging_config_file: Path = Path("src/config/logging.conf")
+    logging_config_file: Path = Path("product_catalog_sync/config/logging.conf")
 
     # Ruta de los datos
     catalog_data_path: Path = Path("data/feed_items.csv")

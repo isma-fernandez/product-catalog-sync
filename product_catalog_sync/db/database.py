@@ -9,7 +9,7 @@ from product_catalog_sync.utils.logging import get_logger
 from product_catalog_sync.db.base import Base
 
 
-logger = get_logger("app.db")
+logger = get_logger(__name__)
 
 engine: Engine = create_engine(
     f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"

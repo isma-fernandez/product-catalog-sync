@@ -4,10 +4,10 @@ from typing import List
 from pydantic import ValidationError
 from product_catalog_sync.schemas.product_input import ProductInput
 from product_catalog_sync.utils.logging import get_logger
+import sys
 
 
-
-logger = get_logger(f"app.{__name__}")
+logger = get_logger(__name__)
 
 def read_products_from_csv(file_path: Path) -> List[ProductInput]:
     """
@@ -28,12 +28,14 @@ def read_products_from_csv(file_path: Path) -> List[ProductInput]:
                     continue
                 except Exception as e:
                     logger.error(f"""Error inesperado al procesar el producto con id {row['product_id']} 
-                                 en fila {reader.line_num}: {e}""", exc_info=True)
+                                 en fila""", exc_info=True)
                     continue
     except FileNotFoundError:
         logger.error(f"Archivo no encontrado en {file_path}", exc_info=True)
+        sys.exit(1)
     except Exception as e:
-        logger.error(f"Error al leer el archivo CSV: {e}", exc_info=True)
+        logger.error(f"Error al leer el archivo CSV", exc_info=True)
+        sys.exit(1)
 
     logger.info(f"Se leyeron {len(products)} productos del archivo CSV.")
     print(products)

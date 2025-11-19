@@ -11,7 +11,7 @@ async def lifespan(app: FastAPI):
     Operaciones de inicio y cierre de la aplicación FastAPI
     """
     setup_logging()
-    logger = get_logger("app.api")
+    logger = get_logger(__name__)
     logger.info("Inicializando aplicación FastAPI...")
 
     verify_db_connection()

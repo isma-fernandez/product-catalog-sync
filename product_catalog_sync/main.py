@@ -7,7 +7,7 @@ from product_catalog_sync.services.update_portal import update_portal
 from product_catalog_sync.services.update_catalog import update_catalog
 from product_catalog_sync.config.app_config import settings
 
-logger = get_logger("app.main")
+logger = get_logger(__name__)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -32,7 +32,7 @@ def main():
         update_catalog()
     elif args.portal:
         update_portal()
-    else:
+    elif not args.initdb:
         logger.error("No se especificó ninguna acción. Usa --catalog o --portal.")
 
 if __name__ == "__main__":

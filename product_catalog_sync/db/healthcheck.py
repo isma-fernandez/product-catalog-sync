@@ -5,7 +5,7 @@ from product_catalog_sync.db.database import engine
 from product_catalog_sync.utils.logging import get_logger
 
 
-logger = get_logger("app.db")
+logger = get_logger(__name__)
 
 def verify_db_connection() -> None:
     try:

@@ -5,8 +5,8 @@ from product_catalog_sync.schemas.product_input import ProductInput
 from product_catalog_sync.repositories import product_repository, store_repository, product_store_repository
 
 
-logger = get_logger("app.services.product")
-db_logger = get_logger("app.db.services.product")
+logger = get_logger(__name__)
+db_logger = get_logger(f"{__name__}.db")
 
 
 def process_one_product(db: Session, product: ProductInput) -> None:

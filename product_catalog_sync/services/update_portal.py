@@ -9,8 +9,8 @@ from product_catalog_sync.db import database
 from product_catalog_sync.services.product_service import process_one_product
 from product_catalog_sync.repositories import product_repository
 
-logger = get_logger(f"app.{__name__}")
-db_logger = get_logger(f"app.db.{__name__}")
+logger = get_logger(__name__)
+db_logger = get_logger(f"{__name__}.db")
 
 def update_portal() -> None:
     logger.info("Actualizando el portal de productos...")
