@@ -6,14 +6,14 @@ setup:
 	venv\Scripts\pip install -r requirements.txt
 
 	@echo Preparando archivos .env y docker.env
-	@if not exist .env (
-		echo Copiando .env.example a .env
-		copy .env.example .env >nul
+	@if not exist .env ( \
+		echo Copiando .env.example a .env \
+		copy .env.example .env >nul \
 	)
 
-	@if not exist docker.env (
-		echo Copiando docker.env.example a docker.env
-		copy docker.env.example docker.env >nul
+	@if not exist docker.env ( \
+		echo Copiando docker.env.example a docker.env \
+		copy docker.env.example docker.env >nul \
 	)
 
 	@echo Levantando Docker

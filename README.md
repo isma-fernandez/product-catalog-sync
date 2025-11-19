@@ -29,36 +29,47 @@ La aplicación sigue una arquitectura basada en capas:
 - **Docker y Docker Compose**
 - **Make** (Opcional para la instalación rápida)
 
-### Instalación manual
-
-#### 1. Clonar el repositorio
+### Clonar el repositorio
 ```bash
 git clone https://github.com/isma-fernandez/product-catalog-sync.git
 cd product-catalog-sync
 ```
 
-#### 2. Crear entorno virtual
+### Instalación manual
+
+#### 1. Crear entorno virtual
 ```bash
 python -m venv venv
+```
 
-# En linux/macOS
+En linux:
+```bash
 source venv/bin/activate
-
-# En Windows
+```
+En Windows:
+```bash
 venv\Scripts\activate
 ```
 
-#### 3. Instalar dependencias
+#### 2. Instalar dependencias
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 4. Configurar variables de entorno
-Copia los archivos de ejemplo y modifica las variables con tus datos:
+#### 3. Configurar variables de entorno
+Copia los archivos de ejemplo y modifica las variables con tus datos.
+
+En linux:
 ```bash
 cp .env.example .env
 cp docker.env.example .docker.env
 ```
+En windows:
+```bash
+copy .env.example .env
+copy docker.env.example .docker.env
+```
+
 Edita el archivo `.env` con tus datos:
 
 ```env
@@ -81,7 +92,7 @@ API_PORT=8000
 ```
 **NOTA**: Para que funcione el contenedor de FastAPI **DB_HOST** debe ser igual al nombre del servicio en `docker-compose.yaml`
 
-#### 5. Iniciar la base de datos y FastAPI con Docker
+#### 4. Iniciar la base de datos y FastAPI con Docker
 ```bash
 docker-compose up -d
 ```
@@ -111,17 +122,23 @@ Para detener los contenedores:
 docker-compose down
 ```
 
-#### 6. Crear tablas
+#### 5. Crear tablas
 Antes de poder hacer nada se **deben** crear las tablas:
 ```bash
 python -m product_catalog_sync.main --initdb
 ```
 
-#### 7. Datos de entrada
+#### 6. Datos de entrada
 El sistema espera archivos CSV en el directorio por defecto `data/`. Crea el directorio si no existe:
-La configuración de la ruta se puede cambiar en `product_catalog_sync/config/app_config.py`
+La configuración de la ruta se puede cambiar en `product_catalog_sync/config/app_config.py`.
+
+En linux:
 ```bash
 mkdir -p data
+```
+En windows:
+```bash
+mkdir data
 ```
 
 El formato esperado es el siguiente (feed_items.csv y portal_items.csv):
@@ -315,7 +332,7 @@ Asegúrate de estar siempre dentro del entorno virtual:
 
 Linux / macOS
 ```bash
-source .venv/bin/activate
+source .venv/bin/activate 
 ```
 Windows (cmd)
 ```bash
