@@ -29,6 +29,14 @@ La aplicación sigue una arquitectura basada en capas:
 - **Docker y Docker Compose**
 - **Make** (Opcional para la instalación rápida)
 
+**IMPORTANTE**: En caso de linux, también se debe ejecutar:
+```bash
+sudo apt update
+sudo apt install python3.12-venv libpq-dev python3-dev build-essential
+sudo usermod -aG docker $USER
+```
+
+
 ### Clonar el repositorio
 ```bash
 git clone https://github.com/isma-fernandez/product-catalog-sync.git
