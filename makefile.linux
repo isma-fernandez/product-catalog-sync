@@ -1,0 +1,21 @@
+setup:
+	@echo Creando entorno virtual
+	python3 -m venv venv
+
+	@echo Instalando dependencias
+	venv/bin/pip install -r requirements.txt
+
+	@echo Preparando archivo .env
+	@if [ ! -f .env ]; then echo "Copiando .env.example → .env"; cp .env.example .env; fi
+	@if [ ! -f docker.env ]; then echo "Copiando docker.env.example → docker.env"; cp docker.env.example docker.env; fi
+
+	@echo Levantando Docker
+	docker compose up -d
+
+	@echo Inicializando base de datos
+	venv/bin/python -m product_catalog_sync.main --initdb
+
+	@echo Creando directorios
+	mkdir -p data logs
+
+	@echo Instalación completa.

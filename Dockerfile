@@ -11,6 +11,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar el proyecto al contenedor
+# No es lo ideal, pero no tengo tiempo para hacer un COPY selectivo
 COPY . .
 
 EXPOSE 8000

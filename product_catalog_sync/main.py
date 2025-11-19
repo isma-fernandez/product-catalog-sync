@@ -18,12 +18,14 @@ def main():
     args = parser.parse_args()
 
     setup_logging()
-    logger.info("Iniciando la aplicación...")
+    logger.info("Configuración de logging completada.")
 
     verify_db_connection()
     if args.initdb:
+        logger.info("Inicializando la base de datos...")
         init_db()
-    
+    else:
+        logger.info("Iniciando la aplicación...")
     if args.file:
         settings.catalog_data_path = Path(args.file)
         settings.portal_data_path = Path(args.file)

@@ -1,4 +1,5 @@
 import sys
+import os
 from contextlib import contextmanager
 from typing import Generator
 from sqlalchemy import create_engine, Engine
@@ -11,11 +12,8 @@ from product_catalog_sync.db.base import Base
 
 logger = get_logger(__name__)
 
-engine: Engine = create_engine(
-    f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
-)
+engine: Engine =  create_engine(f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}")
 SessionLocal: Session = sessionmaker(autocommit=False, bind=engine)
-
 
 def get_db() -> Generator:
     """

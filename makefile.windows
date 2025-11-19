@@ -1,0 +1,29 @@
+setup:
+	@echo Creando entorno virtual
+	python -m venv venv
+
+	@echo Instalando dependencias
+	venv\Scripts\pip install -r requirements.txt
+
+	@echo Preparando archivos .env y docker.env
+	@if not exist .env (
+		echo Copiando .env.example a .env
+		copy .env.example .env >nul
+	)
+
+	@if not exist docker.env (
+		echo Copiando docker.env.example a docker.env
+		copy docker.env.example docker.env >nul
+	)
+
+	@echo Levantando Docker
+	docker compose up -d
+
+	@echo Inicializando base de datos
+	venv\Scripts\python -m product_catalog_sync.main --initdb
+
+	@echo Creando directorios
+	@if not exist data mkdir data
+	@if not exist logs mkdir logs
+
+	@echo Instalación completa.
