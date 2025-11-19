@@ -17,3 +17,95 @@ La aplicación sigue una arquitectura basada en capas:
 - **Capa de repositorios**: Acceso y manipulación de la base de datos
 - **Capa de esquemas**: Validación de datos usando Pydantic
 - **Configuración**: Centralización de la configuración
+
+## Instalación y configuración
+
+### Requisitos previos
+
+- **Python 3.10+**
+- **Docker y Docker Compose**
+- **PostgreSQL 17**
+
+### 1. Clonar el repositorio
+```bash
+git clone <repository-url>
+cd product-catalog-sync
+```
+
+### 2. Crear entorno virtual
+```bash
+python -m venv venv
+
+# En linux/macOS
+source venv/bin/activate
+
+# En Windows
+venv\Scripts\activate
+```
+
+### 3. Instalar dependencias
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configurar variables de entorno
+Copia el archivo de ejemplo y modifica las variables con tus datos:
+```bash
+cp .env.example .env
+```
+Edita el archivo `.env` con tus datos:
+
+```env
+DB_NAME=product_catalog
+DB_USER=admin
+DB_PASSWORD=admin
+DB_PORT=5432
+DB_HOST=localhost
+```
+
+### 5. Iniciar la base de datos con Docker
+```bash
+docker-compose up -d
+```
+Esto iniciará un contenedor de PostgreSQL 17 con:
+- Base de datos configurada según el archivo `.env`
+- A través del puerto 5432
+- Con persistencia de datos a través de volúmenes Docker
+
+Para verificar que el contenedor está funcionando:
+```bash
+docker ps
+```
+
+Para ver los logs de la base de datos:
+```bash
+docker logs catalog_db
+```
+
+Para detener la base de datos:
+```bash
+docker-compose down
+```
+
+### 6. Datos de entrada
+El sistema espera archivos CSV en el directorio `data/`. Crea el directorio si no existe:
+
+```bash
+mkdir -p data
+```
+
+El formato esperado es el siguiente (feed_items.csv y portal_items.csv):
+```csv
+product_id,title,price,store_id
+1,Producto Ejemplo,29.99,1|2|3
+2,Otro Producto,15.50,1
+```
+
+Donde:
+- `product_id`: ID único del producto (entero)
+- `store_id`: IDs de tiendas separados por `|` (ejemplo: `1|2|3`)
+- `title`: Nombre del producto
+- `price`: Precio del producto
+
+## Ejecución
+
