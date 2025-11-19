@@ -12,6 +12,6 @@ def verify_db_connection() -> None:
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
         logger.info("Conexión a la base de datos OK.")
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
         logger.error("No se puede conectar a la base de datos. (Mira los logs para más detalles)", exc_info=True)
         sys.exit(1)

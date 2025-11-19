@@ -21,6 +21,7 @@ def process_one_product(db: Session, product: ProductInput) -> None:
             title=product.title, price=product.price
         )
         _assign_stores_to_product(db, product_db, product.store_id)
+        
     else:
         if _is_product_changed(product_db, product):
             db_logger.info(f"UPDATE product {product.product_id} ({product.title}) price={product.price}")

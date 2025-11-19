@@ -15,23 +15,27 @@ db_logger = get_logger(f"{__name__}.db")
 def update_portal() -> None:
     logger.info("Actualizando el portal de productos...")
     products_from_csv: List[ProductInput] = read_products_from_csv(settings.portal_data_path)
-    db: Session = database.create_session()
-
+    
     if not products_from_csv:
         logger.warning("No se encontraron productos para actualizar.")
         return
+    
+    db: Session = database.create_session()
+
     try:
         _delete_products_not_in_csv(db, products_from_csv)
         for product in products_from_csv:
             process_one_product(db, product)
-            ...
         database.commit_session(db)
         db_logger.info("COMMIT portal aplicado correctamente")
+
     except Exception as e:
         logger.error(f"Error al actualizar el portal. Realizando rollback.", exc_info=True)
+        logger.error(f"Ver detalles en los logs.")
         db_logger.warning("ROLLBACK portal: se han revertido los cambios de la transacción")
         db.rollback()
         sys.exit(1)
+
     finally:
         database.close_session(db)
         logger.info("Sesión de base de datos cerrada.")
@@ -43,6 +47,7 @@ def _delete_products_not_in_csv(db: Session, products_in_csv: List[ProductInput]
     all_products_db = product_repository.get_all_products(db)
     all_product_ids_db = {product.product_id for product in all_products_db}
     products_to_delete_ids = all_product_ids_db - csv_product_ids
+
     for product_id in products_to_delete_ids:
         product_db = product_repository.get_product(db, product_id)
         if product_db:

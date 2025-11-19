@@ -51,8 +51,9 @@ def commit_session(db: Session) -> None:
     except:
         db.rollback()
         logger.error("Error al confirmar la sesión de base de datos. Rollback realizado.", exc_info=True)
-    finally:
-        db.close()
+        logger.error("Ver detalles en los logs.")
+        sys.exit(1)
+
 
 def init_db() -> None:
     """
@@ -62,6 +63,7 @@ def init_db() -> None:
     try:
         Base.metadata.create_all(bind=engine)
         logger.info("Todas las tablas fueron creadas correctamente.")
-    except SQLAlchemyError:
-        logger.error("Error creando las tablas en la base de datos.")
+    except SQLAlchemyError as e:
+        logger.error("Error creando las tablas en la base de datos.", exc_info=True)
+        logger.error("Ver detalles en los logs.")
         sys.exit(1)

@@ -24,11 +24,11 @@ def read_products_from_csv(file_path: Path) -> List[ProductInput]:
                     products.append(product)
 
     except FileNotFoundError:
-        logger.error(f"Archivo no encontrado en {file_path}", exc_info=True)
+        logger.error(f"Archivo no encontrado en {file_path} (Ver traceback en los logs)", exc_info=True)
         sys.exit(1)
 
-    except Exception:
-        logger.error("Error al leer el archivo CSV", exc_info=True)
+    except Exception as e:
+        logger.error("Error al leer el archivo CSV (Ver traceback en los logs)", exc_info=True)
         sys.exit(1)
 
     logger.info(f"Se leyeron {len(products)} productos del archivo CSV.")
@@ -61,6 +61,7 @@ def _validate_product_data(row: dict, reader: csv.DictReader) -> ProductInput:
     
     except ValidationError as e:
         logger.error(f"Validación fallida para los datos del producto: {row.get('product_id', '')}", exc_info=True)
+        logger.error(f"Ver detalles en los logs.")
         return None
     
     except Exception:
@@ -69,6 +70,7 @@ def _validate_product_data(row: dict, reader: csv.DictReader) -> ProductInput:
             f"en fila {reader.line_num}",
             exc_info=True
         )
+        logger.error(f"Ver detalles en los logs.")
         return None
 
 
