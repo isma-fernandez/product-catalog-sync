@@ -1,5 +1,6 @@
 # Sincronizador de Catálogo de Productos
-Sistema de sincronización de catálogo de productos que permite la actualización de productos y  relaciones con portales de venta en una base de datos PostgresSQL. El proyecto permite procesar y validar datos desde archivos CSV y mantener la sincronización en dos fuentes de datos: catálogo de productos y portales donde estos estan publicados.
+Sistema de sincronización de catálogo de productos que permite la actualización de productos y relaciones con portales de venta en una base de datos PostgreSQL.  
+Además, incluye una **API REST construida con FastAPI** que permite consultar los productos y sus tiendas asociadas.
 
 ## Funcionalidad general
 Esta aplicación ha sido diseñada en python y permite:
@@ -7,23 +8,18 @@ Esta aplicación ha sido diseñada en python y permite:
     - `--catalog`: Actualiza los productos del catálogo del cliente
     - `--portal`: Sincroniza los productos del portal
 - **Gestionar relaciones**: entre productos y portales de venta (N:N)
+- **FastAPI** para consultar el catálogo de productos y las tiendas asociadas
 - **Validar datos**: a tráves de Pydantic para mantener la integridad de la información
 - **Logs**: sobre todas las operaciones de la aplicación y separados en aplicación y operaciones sobre la base de datos
 
 ## Arquitectura
 La aplicación sigue una arquitectura basada en capas:
+- **Capa de API**: Endpoints de lectura sobre FastAPI
 - **Capa de datos (bd)**: Modelos SQLAlchemy y gestión de la base de datos
 - **Capa de servicios**: Lógica principal para el procesamiento de los productos
 - **Capa de repositorios**: Acceso y manipulación de la base de datos
 - **Capa de esquemas**: Validación de datos usando Pydantic
 - **Configuración**: Centralización de la configuración
-
-## Dependencias principales
-- **SQLAlchemy 2.0.44**: ORM para gestión de base de datos
-- **Pydantic 2.12.4**: Validación de datos
-- **psycopg2 2.9.11**: Adaptador de PostgreSQL
-- **python-dotenv 1.2.1**: Gestión de variables de entorno
-- **pydantic-settings 2.12.0**: Configuración basada en Pydantic
 
 ## Instalación y configuración
 
@@ -31,7 +27,6 @@ La aplicación sigue una arquitectura basada en capas:
 
 - **Python 3.10+**
 - **Docker y Docker Compose**
-- **PostgreSQL 17**
 
 ### Instalación manual
 
@@ -72,7 +67,7 @@ DB_PORT=5432
 DB_HOST=localhost
 ```
 
-#### 5. Iniciar la base de datos con Docker
+#### 5. Iniciar la base de datos y FastAPI con Docker
 ```bash
 docker-compose up -d
 ```
@@ -81,17 +76,23 @@ Esto iniciará un contenedor de PostgreSQL 17 con:
 - A través del puerto 5432
 - Con persistencia de datos a través de volúmenes Docker
 
+Y además un contenedor de FastAPI, que:
+- Levanta la API en `http://localhost:8000`
+- Se conecta directamente al contenedor de PostgreSQL
+- Proporciona un endpoint para obtener todos los productos
+
 Para verificar que el contenedor está funcionando:
 ```bash
 docker ps
 ```
 
-Para ver los logs de la base de datos:
+Para ver los logs:
 ```bash
 docker logs catalog_db
+docker logs product_catalog_app
 ```
 
-Para detener la base de datos:
+Para detener los contenedores:
 ```bash
 docker-compose down
 ```
@@ -134,9 +135,9 @@ Este comando realiza automáticamente los siguientes pasos:
 2. Instala todas las dependencias desde `requirements.txt`
 3. Crea el archivo `.env` a partir de `.env.example` si no existe 
 4. En caso de que no exista: muestra las credenciales por defecto incluidas en `.env.example`
-5. Levanta el contenedor Docker de PostgreSQL
+5. Levanta el contenedor Docker de PostgreSQL y FastAPI
 6. Inicializa las tablas de la base de datos
-7. Crea el directorio `data/` y `logs`, si no existe
+7. Crea el directorio `data/` y `logs/`, si no existe
 
 Cuando la instalación termine verás un mensaje como:
 
@@ -147,6 +148,9 @@ Puedes empezar ejecutando:
   python -m src.main --portal
   python -m src.main --catalog
   opcional: --file <ruta_del_archivo>
+
+O accediendo al endpoint a través de:
+  localhost:8000/api/products
 ```
 
 ## Ejecución
@@ -193,7 +197,6 @@ Este modo:
 - Crea o actualiza productos existentes
 - **Elimina** productos que no están en el CSV
 - Sincroniza completamente el portal con el archivo
-
 
 ### Verificación de logs
 Los logs se almacenan en el directorio `/logs`. Están divididos en dos archivos:
@@ -296,3 +299,37 @@ python -m src.main --portal    # ruta por defecto
 # o
 python -m src.main --portal --file data/custom_file.csv
 ```
+
+### Ejemplo 3: Uso de endpoints
+```bash
+# 1. Asegúrate que FastAPI está funcionando
+docker-compose up -d
+
+# Alternativa: ejecutar localmente sin Docker (asegúrate que Docker no este activo)
+uvicorn src.api.app:app --reload
+```
+Una vez la API este disponible en `http://localhost:8000`
+```bash
+# Consultar productos via cURL
+curl http://localhost:8000/api/products
+```
+
+Este es un ejemplo de respuesta:
+```json
+[
+  {
+    "product_id": 1084,
+    "title": "PORTATIL MACBOOK AIR 2017",
+    "price": 599.95,
+    "stores": [1, 3]
+  },
+  {
+    "product_id": 1946,
+    "title": "GOOGLE CHROMECAST 3GEN",
+    "price": 29.95,
+    "stores": [4, 2]
+  }
+]
+```
+
+También puedes consultar la documentación de los endpoints en `http://localhost:8000/docs` o `http://localhost:8000/redoc`
