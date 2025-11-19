@@ -12,6 +12,10 @@ def setup_logging() -> None:
     """
     log_config_path: Path = settings.logging_config_file
 
+    # Asegurarse de que el directorio de logs exista
+    logs_path = settings.logs_path
+    logs_path.mkdir(parents=True, exist_ok=True)
+
     if log_config_path.exists():
         logging.config.fileConfig(log_config_path, disable_existing_loggers=False)
         logger.info(f"Logging configurado usando: {log_config_path}")

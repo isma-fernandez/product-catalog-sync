@@ -24,6 +24,5 @@ setup:
 
 	@echo Creando directorios
 	@if not exist data mkdir data
-	@if not exist logs mkdir logs
 
 	@echo Instalación completa.

@@ -14,8 +14,12 @@ class AppConfig(BaseSettings):
     logging_config_file: Path = Path("product_catalog_sync/config/logging.conf")
 
     # Ruta de los datos
-    catalog_data_path: Path = Path("data/feed_items.csv")
-    portal_data_path: Path = Path("data/portal_items.csv")
+    data_path: Path = Path("data")
+    catalog_data_path: Path = data_path / "feed_items.csv"
+    portal_data_path: Path = data_path / "portal_items.csv"
+
+    # Ruta de los logs
+    logs_path: Path = Path("logs")
 
     # Leer configuración desde archivo .env
     class Config:

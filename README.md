@@ -27,6 +27,7 @@ La aplicación sigue una arquitectura basada en capas:
 
 - **Python 3.10+**
 - **Docker y Docker Compose**
+- **Make** (Opcional para la instalación rápida)
 
 ### Instalación manual
 
@@ -53,9 +54,10 @@ pip install -r requirements.txt
 ```
 
 #### 4. Configurar variables de entorno
-Copia el archivo de ejemplo y modifica las variables con tus datos:
+Copia los archivos de ejemplo y modifica las variables con tus datos:
 ```bash
 cp .env.example .env
+cp docker.env.example .docker.env
 ```
 Edita el archivo `.env` con tus datos:
 
@@ -67,6 +69,17 @@ DB_PORT=5432
 DB_HOST=localhost
 API_PORT=8000
 ```
+
+Edita el archivo `docker.env` con tus datos:
+```docker.env
+DB_NAME=product_catalog
+DB_USER=admin
+DB_PASSWORD=admin
+DB_PORT=5432
+DB_HOST=db
+API_PORT=8000
+```
+**NOTA**: Para que funcione el contenedor de FastAPI **DB_HOST** debe ser igual al nombre del servicio en `docker-compose.yaml`
 
 #### 5. Iniciar la base de datos y FastAPI con Docker
 ```bash
@@ -101,12 +114,12 @@ docker-compose down
 #### 6. Crear tablas
 Antes de poder hacer nada se **deben** crear las tablas:
 ```bash
-python -m src.main --initdb
+python -m product_catalog_sync.main --initdb
 ```
 
 #### 7. Datos de entrada
-El sistema espera archivos CSV en el directorio `data/`. Crea el directorio si no existe:
-
+El sistema espera archivos CSV en el directorio por defecto `data/`. Crea el directorio si no existe:
+La configuración de la ruta se puede cambiar en `product_catalog_sync/config/app_config.py`
 ```bash
 mkdir -p data
 ```
@@ -127,37 +140,48 @@ Donde:
 ### Instalación rápida
 La forma más sencilla de instalar y preparar todo el entorno (entorno virtual, dependencias, variables de entorno, base de datos Docker, tablas y estructura de directorios) es ejecutar:
 ```bash
-make install
+make -f Makefile.windows setup # para Windows
+make -f Makefile.linux setup   # para Linux
 ```
-**NOTA**: Se recomienda crear el archivo `.env` con tus datos a partir del ejemplo `.env.example` antes de ejecutar este comando
+**NOTA**: Se recomienda crear el archivo `.env` y `docker.env` con tus datos a partir de los ejemplos `.env.example` y `docker.env.example` antes de ejecutar este comando
 Este comando realiza automáticamente los siguientes pasos:
 
 1. Crea un entorno virtual (`venv/`)
 2. Instala todas las dependencias desde `requirements.txt`
-3. Crea el archivo `.env` a partir de `.env.example` si no existe 
-4. En caso de que no exista: muestra las credenciales por defecto incluidas en `.env.example`
-5. Levanta el contenedor Docker de PostgreSQL y FastAPI
-6. Inicializa las tablas de la base de datos
-7. Crea el directorio `data/` y `logs/`, si no existe
+3. Crea el archivo `.env` y `docker.env` a partir de `.env.example` y `docker.env.example` si no existe 
+4. Levanta el contenedor Docker de PostgreSQL y FastAPI
+5. Inicializa las tablas de la base de datos
+6. Crea el directorio `data/` si no existe
 
 Cuando la instalación termine verás un mensaje como:
 
 ```
 Instalación completa.
-
-Puedes empezar ejecutando:
-  python -m src.main --portal
-  python -m src.main --catalog
-  opcional: --file <ruta_del_archivo>
-
-O accediendo al endpoint a través de:
-  localhost:8000/api/products
 ```
 
 ## Ejecución
 
+### Usar el entorno virtual
+Antes de ejecutar cualquier comando, asegúrate de activar el entorno virtual creado durante la instalación.
+Linux / macOS
+```bash
+source .venv/bin/activate
+```
+Windows (cmd)
+```bash
+venv\Scripts\activate
+```
+Windows (Powershell)
+```bash
+.\.venv\Scripts\Activate.ps1
+```
+
 ### Inicializar la base de datos
-El programa crea y inicializa las tablas automáticamente.
+En caso de no haberlo hecho durante la instalación manual, crea las tablas usando: 
+```bash
+python -m product_catalog_sync.main --initdb
+```
+La instalación rápida las crea automáticamente.
 
 ### Modo catálogo
 
@@ -165,13 +189,15 @@ Actualiza el catálogo de productos desde `data/feed_items.csv` o una ruta espec
 
 Ruta por defecto (`data/feed_items.csv`)
 ```bash
-python -m src.main --catalog
+python -m product_catalog_sync.main --catalog
 ```
 
 Ruta personalizada:
 ```bash
-python -m src.main --catalog --file data/custom_file.csv
+python -m product_catalog_sync.main --catalog --file data/custom_file.csv
 ```
+
+Las rutas por defecto pueden ser modificadas en `product_catalog_sync/config/app_config.py`
 
 Este modo:
 - Lee productos del archivo CSV
@@ -185,13 +211,15 @@ Sincroniza productos desde `data/portal_items.csv`:
 
 Ruta por defecto (`data/feed_items.csv`)
 ```bash
-python -m src.main --portal
+python -m product_catalog_sync.main --portal
 ```
 
 Ruta personalizada:
 ```bash
-python -m src.main --portal --file data/custom_file.csv
+python -m product_catalog_sync.main --portal --file data/custom_file.csv
 ```
+
+Las rutas por defecto pueden ser modificadas en `product_catalog_sync/config/app_config.py`
 
 Este modo:
 - Lee productos del archivo CSV
@@ -200,18 +228,21 @@ Este modo:
 - Sincroniza completamente el portal con el archivo
 
 ### Verificación de logs
-Los logs se almacenan en el directorio `/logs`. Están divididos en dos archivos:
+Los logs se almacenan en el directorio por defecto `/logs`. Están divididos en dos archivos:
 - **app.log**: registra todo lo que ocurre relacionado directamente con la aplicación
 - **db.log**: registra todas las operaciones realizadas sobre la base de datos incluido COMMITS y ROLLBACKS
+
+Las rutas por defecto pueden ser modificadas en `product_catalog_sync/config/app_config.py`
 
 ## Estructura del código
 ```
 product-catalog-sync/
 │
-├── src/
+├── product_catalog_sync/
 │   ├── api/  
-│       ├── app.py             # Startup y configuración de la API
-│       └── routers.py         # Endpoints         
+│   │   ├── app.py             # Punto de entrada de la API
+│   │   └── routers.py         # Endpoints         
+│   │
 │   ├── config/                
 │   │   ├── app_config.py      # Configuración principal
 │   │   └── logging.conf       # Configuración de logging
@@ -226,12 +257,14 @@ product-catalog-sync/
 │   │   └── healthcheck.py    # Verificación de conexión a DB
 │   │
 │   ├── repositories/          # Capa de acceso a datos
-│   │   ├── product_repository.py       # CRUD de productos
-│   │   ├── store_repository.py         # CRUD de tiendas
+│   │   ├── product_queries.py        # Consultas SQL
+│   │   ├── product_repository.py     # CRUD de productos
+│   │   ├── store_repository.py       # CRUD de tiendas
 │   │   └── product_store_repository.py # CRUD de relaciones
 │   │
 │   ├── schemas/               # Esquemas de validación
-│   │   └── product_input.py   # Schema para datos de entrada
+│   │   ├── product_input.py   # Schema para datos de entrada
+│   │   └── product_response.py# Schema para respuestas
 │   │
 │   ├── services/              # Lógica principal
 │   │   ├── csv_reader.py      # Lectura y validación de CSV
@@ -245,13 +278,19 @@ product-catalog-sync/
 │   │
 │   └── main.py               # Punto de entrada de la aplicación
 │
-├── data/                      # Archivos CSV de entrada
-│   ├── feed_items.csv        # Datos del catálogo
-│   └── portal_items.csv      # Datos del portal
 │
 ├── docker-compose.yaml       # Configuración de Docker para PostgreSQL
+├── docker.env.example        # Variables de entorno para Docker (ejemplo)
+├── Dockerfile                # Imagen de la aplicación
+│
+├── makefile.linux            # Makefile para Linux
+├── makefile.windows          # Makefile para Windows
+│
 ├── requirements.txt          # Dependencias de Python
+│
 ├── .env.example             # Ejemplo de variables de entorno
+├── .gitignore               # Exclusiones de Git
+│
 └── README.md                # Esta documentación
 ```
 
@@ -271,34 +310,41 @@ El sistema utiliza tres tablas principales
 - `store_id` (FK, PK): Referencia a Stores
 
 ## Ejemplos de uso
-
+Asegúrate de estar siempre dentro del entorno virtual:
+Linux / macOS
+```bash
+source .venv/bin/activate
+```
+Windows (cmd)
+```bash
+venv\Scripts\activate
+```
+Windows (Powershell)
+```bash
+.\.venv\Scripts\Activate.ps1
+```
 ### Ejemplo 1: Actualización del catálogo
+
 ```bash
 # 1. Asegúrate que la base de datos está funcionando
 docker-compose up -d
 
-# 2. Verifica tu archivo CSV
-cat data/feed_items.csv
-# o
-cat data/custom_file.csv
+# 2. Verifica tener los datos CSV en data/, específicado con --file o en la ruta que hayas configurado
 
 # 3. Ejecuta la actualización del catálogo
-python -m src.main --catalog    # ruta por defecto
+python -m product_catalog_sync.main --catalog    # ruta por defecto
 # o
-python -m src.main --catalog --file data/custom_file.csv
+python -m product_catalog_sync.main --catalog --file data/custom_file.csv
 ```
 
 ### Ejemplo 2: Sincronización del portal
 ```bash
-#1. Verifica tu archivo CSV
-cat data/portal_items.csv
-# o
-cat data/custom_file.csv
+# 1. Verifica tener los datos CSV en data/, específicado con --file o en la ruta que hayas configurado
 
 # 2. Ejecuta la actualización del catálogo
-python -m src.main --portal    # ruta por defecto
+python -m product_catalog_sync.main --portal    # ruta por defecto
 # o
-python -m src.main --portal --file data/custom_file.csv
+python -m product_catalog_sync.main --portal --file data/custom_file.csv
 ```
 
 ### Ejemplo 3: Uso de endpoints
@@ -307,7 +353,7 @@ python -m src.main --portal --file data/custom_file.csv
 docker-compose up -d
 
 # Alternativa: ejecutar localmente sin Docker (asegúrate que Docker no este activo)
-uvicorn src.api.app:app --reload
+uvicorn product_catalog_sync.api.app:app --reload
 ```
 Una vez la API este disponible en `http://localhost:8000`
 ```bash

@@ -16,6 +16,6 @@ setup:
 	venv/bin/python -m product_catalog_sync.main --initdb
 
 	@echo Creando directorios
-	mkdir -p data logs
+	mkdir -p data
 
 	@echo Instalación completa.
