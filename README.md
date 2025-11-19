@@ -33,7 +33,7 @@ La aplicación sigue una arquitectura basada en capas:
 
 #### 1. Clonar el repositorio
 ```bash
-git clone <repository-url>
+git clone https://github.com/isma-fernandez/product-catalog-sync.git
 cd product-catalog-sync
 ```
 
