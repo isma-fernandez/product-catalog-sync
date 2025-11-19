@@ -205,7 +205,9 @@ Los logs se almacenan en el directorio `/logs`. Están divididos en dos archivos
 product-catalog-sync/
 │
 ├── src/
-│   ├── api/                    # API (TODO)
+│   ├── api/  
+│       ├── app.py             # Startup y configuración de la API
+│       └── routers.py         # Endpoints         
 │   ├── config/                
 │   │   ├── app_config.py      # Configuración principal
 │   │   └── logging.conf       # Configuración de logging
