@@ -259,6 +259,3 @@ python -m src.main --portal    # ruta por defecto
 # o
 python -m src.main --portal --file data/custom_file.csv
 ```
-
-
-```
