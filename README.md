@@ -163,6 +163,7 @@ Instalación completa.
 
 ### Usar el entorno virtual
 Antes de ejecutar cualquier comando, asegúrate de activar el entorno virtual creado durante la instalación.
+
 Linux / macOS
 ```bash
 source .venv/bin/activate
@@ -311,6 +312,7 @@ El sistema utiliza tres tablas principales
 
 ## Ejemplos de uso
 Asegúrate de estar siempre dentro del entorno virtual:
+
 Linux / macOS
 ```bash
 source .venv/bin/activate
@@ -329,7 +331,7 @@ Windows (Powershell)
 # 1. Asegúrate que la base de datos está funcionando
 docker-compose up -d
 
-# 2. Verifica tener los datos CSV en data/, específicado con --file o en la ruta que hayas configurado
+# 2. Verifica tener los datos CSV en data/, especificado con --file o en la ruta que hayas configurado
 
 # 3. Ejecuta la actualización del catálogo
 python -m product_catalog_sync.main --catalog    # ruta por defecto
@@ -339,7 +341,7 @@ python -m product_catalog_sync.main --catalog --file data/custom_file.csv
 
 ### Ejemplo 2: Sincronización del portal
 ```bash
-# 1. Verifica tener los datos CSV en data/, específicado con --file o en la ruta que hayas configurado
+# 1. Verifica tener los datos CSV en data/, especificado con --file o en la ruta que hayas configurado
 
 # 2. Ejecuta la actualización del catálogo
 python -m product_catalog_sync.main --portal    # ruta por defecto
