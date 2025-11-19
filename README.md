@@ -1,6 +1,6 @@
 # Sincronizador de Catálogo de Productos
 Sistema de sincronización de catálogo de productos que permite la actualización de productos y relaciones con portales de venta en una base de datos PostgreSQL.  
-Además, incluye una **API REST construida con FastAPI** que permite consultar los productos y sus tiendas asociadas.
+Además, incluye una API REST construida con FastAPI que permite consultar los productos y sus tiendas asociadas.
 
 ## Funcionalidad general
 Esta aplicación ha sido diseñada en python y permite:
@@ -65,6 +65,7 @@ DB_USER=admin
 DB_PASSWORD=admin
 DB_PORT=5432
 DB_HOST=localhost
+API_PORT=8000
 ```
 
 #### 5. Iniciar la base de datos y FastAPI con Docker
