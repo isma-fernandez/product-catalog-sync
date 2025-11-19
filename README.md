@@ -94,7 +94,13 @@ Para detener la base de datos:
 docker-compose down
 ```
 
-### 6. Datos de entrada
+### 6. Crear tablas
+Antes de poder hacer nada se **deben** crear las tablas:
+```bash
+python -m src.main --initdb
+```
+
+### 7. Datos de entrada
 El sistema espera archivos CSV en el directorio `data/`. Crea el directorio si no existe:
 
 ```bash

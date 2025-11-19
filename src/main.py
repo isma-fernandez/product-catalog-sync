@@ -14,13 +14,15 @@ def main():
     parser.add_argument("--catalog", action="store_true", help="Actualiza el catálogo desde un archivo")
     parser.add_argument("--portal", action="store_true", help="Actualiza el portal desde un archivo")
     parser.add_argument("--file", type=str, help="Ruta del archivo a procesar (opcional)")
+    parser.add_argument("--initdb", action="store_true", help="Inicializa la base de datos")
     args = parser.parse_args()
 
     setup_logging()
     logger.info("Iniciando la aplicación...")
 
     verify_db_connection()
-    init_db()
+    if args.initdb:
+        init_db()
     
     if args.file:
         settings.catalog_data_path = Path(args.file)
