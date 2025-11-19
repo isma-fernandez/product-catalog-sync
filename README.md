@@ -33,13 +33,15 @@ La aplicación sigue una arquitectura basada en capas:
 - **Docker y Docker Compose**
 - **PostgreSQL 17**
 
-### 1. Clonar el repositorio
+### Instalación manual
+
+#### 1. Clonar el repositorio
 ```bash
 git clone <repository-url>
 cd product-catalog-sync
 ```
 
-### 2. Crear entorno virtual
+#### 2. Crear entorno virtual
 ```bash
 python -m venv venv
 
@@ -50,12 +52,12 @@ source venv/bin/activate
 venv\Scripts\activate
 ```
 
-### 3. Instalar dependencias
+#### 3. Instalar dependencias
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variables de entorno
+#### 4. Configurar variables de entorno
 Copia el archivo de ejemplo y modifica las variables con tus datos:
 ```bash
 cp .env.example .env
@@ -70,7 +72,7 @@ DB_PORT=5432
 DB_HOST=localhost
 ```
 
-### 5. Iniciar la base de datos con Docker
+#### 5. Iniciar la base de datos con Docker
 ```bash
 docker-compose up -d
 ```
@@ -94,13 +96,13 @@ Para detener la base de datos:
 docker-compose down
 ```
 
-### 6. Crear tablas
+#### 6. Crear tablas
 Antes de poder hacer nada se **deben** crear las tablas:
 ```bash
 python -m src.main --initdb
 ```
 
-### 7. Datos de entrada
+#### 7. Datos de entrada
 El sistema espera archivos CSV en el directorio `data/`. Crea el directorio si no existe:
 
 ```bash
@@ -119,6 +121,33 @@ Donde:
 - `store_id`: IDs de tiendas separados por `|` (ejemplo: `1|2|3`)
 - `title`: Nombre del producto
 - `price`: Precio del producto
+
+### Instalación rápida
+La forma más sencilla de instalar y preparar todo el entorno (entorno virtual, dependencias, variables de entorno, base de datos Docker, tablas y estructura de directorios) es ejecutar:
+```bash
+make install
+```
+**NOTA**: Se recomienda crear el archivo `.env` con tus datos a partir del ejemplo `.env.example` antes de ejecutar este comando
+Este comando realiza automáticamente los siguientes pasos:
+
+1. Crea un entorno virtual (`venv/`)
+2. Instala todas las dependencias desde `requirements.txt`
+3. Crea el archivo `.env` a partir de `.env.example` si no existe 
+4. En caso de que no exista: muestra las credenciales por defecto incluidas en `.env.example`
+5. Levanta el contenedor Docker de PostgreSQL
+6. Inicializa las tablas de la base de datos
+7. Crea el directorio `data/` y `logs`, si no existe
+
+Cuando la instalación termine verás un mensaje como:
+
+```
+Instalación completa.
+
+Puedes empezar ejecutando:
+  python -m src.main --portal
+  python -m src.main --catalog
+  opcional: --file <ruta_del_archivo>
+```
 
 ## Ejecución
 
