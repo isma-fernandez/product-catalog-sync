@@ -1,4 +1,5 @@
 import sys
+from contextlib import contextmanager
 from typing import Generator
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.exc import SQLAlchemyError
@@ -6,6 +7,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from src.config.app_config import settings
 from src.utils.logging import get_logger
 from src.db.base import Base
+
 
 logger = get_logger("app.db")
 
@@ -15,6 +17,7 @@ engine: Engine = create_engine(
 SessionLocal: Session = sessionmaker(autocommit=False, bind=engine)
 
 """ TODO: Función que se utilizará si se desarrolla FastAPI"""
+@contextmanager
 def get_db() -> Generator:
     """
     Proporciona una sesión de base de datos
